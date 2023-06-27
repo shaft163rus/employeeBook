@@ -71,14 +71,12 @@ public class EmployeeBookServiceImpl implements EmployeeBookService {
                 .collect(Collectors.groupingBy(Employee::getDepartment));
 
         Map<String, List<String>> employeesByDepartmentNames = new HashMap<>();
-        for (Map.Entry<String, List<Employee>> entry : employeesByDepartment.entrySet()) {
-            String department = entry.getKey();
-            List<String> employeeNames = entry.getValue().stream()
+        employeesByDepartment.forEach((department, value) -> {
+            List<String> employeeNames = value.stream()
                     .map(Employee::getFirstName)
                     .collect(Collectors.toList());
-
             employeesByDepartmentNames.put(department, employeeNames);
-        }
+        });
         return employeesByDepartmentNames;
     }
 
