@@ -59,7 +59,7 @@ public class EmployeeBookController {
 
     @GetMapping(path = "/departments/all")
     public String getEmployeesDepartmentsAll() {
-        return employeeBookService.getEmployeesDepartmentsAll();
+        return employeeBookService.getEmployeesDepartmentsAll().toString();
     }
 
 
