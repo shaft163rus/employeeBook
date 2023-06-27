@@ -13,16 +13,12 @@ import java.util.stream.Collectors;
 public class EmployeeBookServiceImpl implements EmployeeBookService {
     Map<String, Employee> employees = new HashMap<>();
 
-    @Override
-    public String addEmployee(String lastName, String firstName, int salary, String department) {
-        return null;
-    }
 
     public Map<String, Employee> getEmployees() {
         return employees;
     }
 
-    public String addEmployee(String lastName, String firstName, String patronymicName, int salary, String department){
+    public String addEmployee(String lastName, String firstName, int salary, String department){
         Employee employee = new Employee(lastName, firstName, salary, department);
         if (employees.containsKey(employee.getFullName())){
             throw new RuntimeException("This employee is already in database");
@@ -68,26 +64,23 @@ public class EmployeeBookServiceImpl implements EmployeeBookService {
                 .collect(Collectors.toList());
     }
 
-    public String getEmployeesDepartmentsAll(){
-        List<String> departments = employees.values().stream()
-                .map(employee -> employee.getDepartment())
-                .distinct()
-                .collect(Collectors.toList());
 
-        String employeesAll = "";
-        for (String department : departments) {
-            employeesAll += "Department of " + department + ": ";
-            String employeesByDepartment = employees.values().stream()
-                    .filter(employee -> employee.getDepartment().contains(department))
-                    .map(Object::toString)
-                    .collect(Collectors.joining(", "));
-            employeesAll += employeesByDepartment + " \n";
 
+    public Map<String, List<String>> getEmployeesDepartmentsAll() {
+        Map<String, List<Employee>> employeesByDepartment = employees.values().stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
+
+        Map<String, List<String>> employeesByDepartmentNames = new HashMap<>();
+        for (Map.Entry<String, List<Employee>> entry : employeesByDepartment.entrySet()) {
+            String department = entry.getKey();
+            List<String> employeeNames = entry.getValue().stream()
+                    .map(Employee::getFirstName)
+                    .collect(Collectors.toList());
+
+            employeesByDepartmentNames.put(department, employeeNames);
         }
-        return employeesAll;
-
+        return employeesByDepartmentNames;
     }
-
 
 
     public String printEmployees(){
